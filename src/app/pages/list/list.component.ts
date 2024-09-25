@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Card } from 'src/app/interfaces/card.interface';
+import { CardService } from 'src/app/services/card.service';
 
 @Component({
   selector: 'app-list',
@@ -7,9 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListComponent implements OnInit {
 
-  constructor() { }
+  cards: Card[] = []; 
+  offset = 0;
+  constructor(private cardService: CardService) { }
 
   ngOnInit(): void {
+    this.searchCards();
+  } 
+
+  onScroll(){
+    console.log("scrolled!!");
+    this.offset += 100;
+    this.searchCards();
   }
 
+  searchCards(){
+    this.cardService.getCards(this.offset).subscribe((res) => {
+      console.log(res);
+      this.cards = [...this.cards, ...res];
+    });
+  }
 }
